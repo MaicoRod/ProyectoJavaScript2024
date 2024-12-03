@@ -1,0 +1,70 @@
+#footer {
+    display: flex;
+    width: 100%;
+    background-color: $principal;
+    color: $secundario; 
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 20px;
+    padding-bottom: 0;
+    flex-wrap: wrap;
+
+    #info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        .info--contacto {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: auto;
+            
+            i {
+                font-size: 30px;
+            }
+
+            p {
+                display: flex;
+                flex-direction: column;  
+                overflow-wrap: break-word; 
+                text-align: left;
+                
+                span {
+                    display: block; 
+                }
+            }
+        }
+    }
+
+    article { 
+        margin-bottom: 10px;
+
+        p {
+            margin-bottom: 5px;
+        }
+
+        .buttonFooter {
+            background-color: $fondo;
+        }
+    }
+
+    .redes {
+    
+        a {
+            margin: 30px;
+            font-size: 25px;
+            color: $secundario;
+        }
+        
+        .derechos {
+            font-size: 15px;
+            text-align: right;
+            margin-top: 30px;
+            font-family: none;
+        }
+        
+    }
+}
+
+

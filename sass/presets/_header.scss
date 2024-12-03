@@ -1,0 +1,88 @@
+#header {
+    background-color: $principal;
+    width: 100%;
+    min-height: 120px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    list-style: none;
+
+    #logo{
+        width: 120px;
+        height: 70px;
+        margin: 0;
+        padding: 0;
+    }
+
+    #navbarSup {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        padding: 10px 10px; 
+
+        section {
+            
+            input {
+                width: 500px;
+                height: 40px;
+                border-radius: 10px;
+            }
+        }
+        
+        #usuarios {
+            display: flex; 
+            
+            li {
+                margin: 0 20px;
+                
+                a {
+                    font-size: 20px;
+                    color: $secundario;
+                    
+                    &:hover {
+                        color: $hover !important;
+                    }
+                }
+            }
+
+        }
+        
+    }
+
+    #navbarInf {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        ul {
+            li {
+                display: inline-block;
+                margin: 0 20px;
+
+                a {
+                    color: $secundario;
+
+                    &:hover {
+                        color: $hover !important;
+                    }
+                }
+            }
+        }
+        
+        .menu-hamburguesa {
+            display: none; 
+            color: $secundario;
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+
