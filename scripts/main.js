@@ -40,7 +40,7 @@ botonesComprar.forEach((boton) => {
                     }
                     break;
                 case "3":
-                    alert("Elegiste Mercado Pago. Serás redirigido a la página de pago.");
+                    alert("Serás redirigido a la página de pago.");
                     break;
                 default:
                     alert("Opción incorrecta. Por favor, elige una opción válida.");
