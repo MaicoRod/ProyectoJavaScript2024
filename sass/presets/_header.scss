@@ -49,33 +49,6 @@
         }
         
     }
-
-    #navbarInf {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        
-        ul {
-            li {
-                display: inline-block;
-                margin: 0 20px;
-
-                a {
-                    color: $secundario;
-
-                    &:hover {
-                        color: $hover !important;
-                    }
-                }
-            }
-        }
-        
-        .menu-hamburguesa {
-            display: none; 
-            color: $secundario;
-        }
-
-    }
 }
 
 

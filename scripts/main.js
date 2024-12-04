@@ -3,51 +3,76 @@ const botonesComprar = document.querySelectorAll(".btn-primary");
 botonesComprar.forEach((boton) => {
     boton.addEventListener("click", () => {
 
-        let nombre = prompt("Ingresa tu nombre:");
-        let apellido = prompt("Ingresa tu apellido:");
+        let nombre;
+        let apellido;
 
-        if (nombre && apellido) {
-            alert("¡Hola " + nombre + " " + apellido + " bienvenido/a a QueCel!");
-        } else {
-            alert("Debe completar los datos para avanzar");
-            return;
-        }
+        // Pedir nombre y apellido
+        do {
+            nombre = prompt("Ingresa tu nombre:");
+            if (!nombre) alert("Debes ingresar tu nombre para avanzar");
+        } while (!nombre);
 
-        let pago = prompt("¿Cómo vas a pagar? Elige entre:\n1. Depósito/Transferencia\n2. Tarjeta (Débito o Crédito)\n3. Mercado Pago");
+        do {
+            apellido = prompt("Ingresa tu apellido:");
+            if (!apellido) alert("Debes ingresar tu apellido para avanzar");
+        } while (!apellido);
 
-        if (pago) {
+        alert("Hola " + nombre + " " + apellido + " bienvenido/a a QueCel");
+
+        let pago;
+
+        do {
+            pago = prompt("¿Cómo vas a pagar?\n1. Depósito/Transferencia\n2. Tarjeta (Débito o Crédito)");
 
             switch (pago) {
                 case "1":
-                    alert("Tienes un 10% de descuento. Recibirás los detalles por correo.");
+                    // Seleccionar solo el precio de la tarjeta asociada al botón
+                    const tarjeta = boton.closest(".card");
+                    const precioTexto = tarjeta.querySelector(".card-text").textContent;
+                    const precioLista = parseInt(precioTexto.replace(/\D/g, ""));
+                    const descuento = precioLista * 0.1;
+                    const precioDescuento = precioLista - descuento;
+
+                    alert("Tienes un descuento del 10%. Deberás abonar: $" + precioDescuento + ". Recibirás los detalles por correo.");
                     break;
+
                 case "2":
-                case "2":
-                    let tipoTarjeta = prompt("¿Es tarjeta de Débito o Crédito?\n1.Débito\n2.Crédito");
-                    if (tipoTarjeta) {
-                        switch (tipoTarjeta) {
-                            case "1":
-                                alert("Tienes un 10% de descuento. Por favor, ingresa los datos de tu tarjeta Débito.");
-                                break;
-                            case "2":
-                                alert("Por favor, ingresa los datos de tu tarjeta Crédito.");
-                                break;
-                            default:
-                                alert("Opción de tarjeta incorrecta. Por favor, elige 'Débito' o 'Crédito'.");
+                    let tipoTarjeta;
+                    const tarjetaSeleccionada = boton.closest(".card");
+                    const precioTarjeta = parseInt(
+                        tarjetaSeleccionada.querySelector(".card-text").textContent.replace(/\D/g, "")
+                    );
+
+                    do {
+                        tipoTarjeta = prompt("¿Tarjeta de Débito o Crédito?\n1. Débito\n2. Crédito");
+                        if (tipoTarjeta === "1") {
+                            // Aplica descuento si es débito
+                            const descuentoDebito = precioTarjeta * 0.1;
+                            const precioFinal = precioTarjeta - descuentoDebito;
+                            alert("Tienes un descuento del 10%, deberás abonar: $" + precioFinal + ". Por favor, ingresa los datos de la tarjeta.");
+                        } else if (tipoTarjeta === "2") {
+                            // Cálculo de cuotas
+                            const tresCuotas = (precioTarjeta / 3).toFixed(2);
+                            const seisCuotas = (precioTarjeta / 6).toFixed(2);
+                            const cuotas = prompt("¿Cuántas cuotas?\n1. 3 sin interés\n2. 6 sin interés");
+                            if (cuotas === "1") {
+                                alert("Las cuotas serán de: $" + tresCuotas + ". Por favor, ingresa los datos de la tarjeta.");
+                            } else if (cuotas === "2") {
+                                alert("Las cuotas serán de: $" + seisCuotas + ". Por favor, ingresa los datos de la tarjeta.");
+                            } else {
+                                alert("Opción incorrecta, intenta nuevamente");
+                            }
+                        } else {
+                            alert("Opción incorrecta, intenta nuevamente");
                         }
-                    } else {
-                        alert("Opción de tarjeta incorrecta.");
-                    }
+                    } while (tipoTarjeta !== "1" && tipoTarjeta !== "2");
                     break;
-                case "3":
-                    alert("Serás redirigido a la página de pago.");
-                    break;
+
                 default:
-                    alert("Opción incorrecta. Por favor, elige una opción válida.");
+                    alert("Opción incorrecta. Por favor, intenta nuevamente");
+                    break;
             }
-        } else {
-            alert("Opción incorrecta.");
-        }
+        } while (pago !== "1" && pago !== "2");
 
     });
 });
