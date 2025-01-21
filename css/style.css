@@ -188,4 +188,11 @@ h1, h2, h3, h4, h5 {
   flex: 1;
 }
 
+.modal-header {
+  background-color: #322FCF;
+}
+.modal-header h5 {
+  color: white;
+}
+
 /*# sourceMappingURL=style.css.map */

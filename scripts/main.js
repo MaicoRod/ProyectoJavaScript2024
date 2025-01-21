@@ -1,117 +1,201 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    //Se declaran las variables
-    
-    const botonesComprar = document.querySelectorAll('.btn-primary');
+    //Declaracion de variables
+    const contenedor = document.querySelector('.contenedor');
     const checkout = document.getElementById('checkout');
     const cartItems = document.getElementById('cart-items');
     const total = document.getElementById('total');
     const finalizarCompraBtn = document.getElementById('finalizar-compra');
-    
-    //Inicializamos el carrito
+    const cerrarCarritoBtn = document.getElementById('cerrar-carrito');
+
+    // Modal confirmacion de compra
+    const mensajeModal = document.createElement('div');
+    mensajeModal.classList.add('modal', 'fade');
+    mensajeModal.id = 'mensajeModal';
+    mensajeModal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmación de Compra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="mensajeModalTexto"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(mensajeModal);
+    const objetoMensajeModal = new bootstrap.Modal(document.getElementById('mensajeModal'));
+
+    // Modal finalizacion de compra
+    const modal = document.createElement('div');
+    modal.classList.add('modal', 'fade');
+    modal.id = 'modalCompra';
+    modal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Finalizar Compra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formCompra">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="apellido" class="form-label">Apellido</label>
+                            <input type="text" class="form-control" id="apellido" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="correo" class="form-label">Correo</label>
+                            <input type="email" class="form-control" id="correo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pago" class="form-label">Método de Pago</label>
+                            <select class="form-select" id="pago" required>
+                                <option value="transferencia">Depósito/Transferencia</option>
+                                <option value="debito">Tarjeta Débito</option>
+                                <option value="credito">Tarjeta Crédito</option>
+                            </select>
+                        </div>
+                        <div id="extraOpciones" class="d-none">
+                            <label for="cuotas" class="form-label">Cuotas</label>
+                            <select class="form-select" id="cuotas">
+                                <option value="3">3 sin interés</option>
+                                <option value="6">6 sin interés</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmarCompra">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalCompra = new bootstrap.Modal(document.getElementById('modalCompra'));
+
+    // Agregar productos
+    productos.forEach(producto => {
+        const tarjeta = document.createElement('div');
+        tarjeta.classList.add('tarjetaArticulos', 'card');
+        tarjeta.style.width = "18rem";
+        tarjeta.innerHTML = `
+            <img src="${producto.img}" class="card-img-top" alt="${producto.nombre}">
+            <div class="card-body">
+                <h5 class="card-title">${producto.nombre}</h5>
+                <p class="card-text">$${producto.precio}</p>
+            </div>
+            <a href="#" class="btn btn-primary">COMPRAR</a>
+        `;
+        contenedor.appendChild(tarjeta);
+    });
 
     let carrito = [];
 
-    //Aplicacion de evento a al boton de "Comprar"
-
-    botonesComprar.forEach(boton => {
-        boton.addEventListener('click', (event) => {
+    // Comprar producto
+    contenedor.addEventListener('click', (event) => {
+        if (event.target.classList.contains('btn-primary')) {
             event.preventDefault();
-
-            //Datos a obtener de la tarjeta de productos para el carrito
-
-            const producto = event.currentTarget.closest('.card');
+            const producto = event.target.closest('.card');
             const nombreProducto = producto.querySelector('.card-title').textContent;
             const precioProducto = parseInt(producto.querySelector('.card-text').textContent.replace(/\D/g, ""));
             const imgProducto = producto.querySelector('.card-img-top').src;
 
-            //Producto agregado al carrito en lista a medida que sumamos productos
-
             agregarProductoAlCarrito({ nombre: nombreProducto, precio: precioProducto, img: imgProducto });
             checkout.classList.add('open');
-        });
+        }
     });
 
-    //Aplicacion de evento al boton "Finalizar compra"
-
-    finalizarCompraBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-
-        let nombre;
-        let apellido;
-
-        // Pedir nombre y apellido
-        do {
-            nombre = prompt("Ingresa tu nombre:");
-            if (!nombre) alert("Debes ingresar tu nombre para avanzar");
-        } while (!nombre);
-
-        do {
-            apellido = prompt("Ingresa tu apellido:");
-            if (!apellido) alert("Debes ingresar tu apellido para avanzar");
-        } while (!apellido);
-
-        alert("Hola " + nombre + " " + apellido + " bienvenido/a a QueCel");
-
-        //Eleccion de metodo de pago
-
-        let pago;
-
-        do {
-            pago = prompt("¿Cómo vas a pagar?\n1. Depósito/Transferencia\n2. Tarjeta (Débito o Crédito)");
-
-            switch (pago) {
-                case "1":  
-                    const descuentoTotal = carrito.reduce((sum, producto) => sum + producto.precio, 0) * 0.1;
-                    const precioDescuento = carrito.reduce((sum, producto) => sum + producto.precio, 0) - descuentoTotal;
-
-                    alert("Tienes un descuento del 10%. Deberás abonar: $" + precioDescuento + ". Recibirás los detalles por correo.");
-                    break;
-
-                case "2":
-                    let tipoTarjeta;
-                    const precioTarjeta = carrito.reduce((sum, producto) => sum + producto.precio, 0);
-
-                    do {
-                        tipoTarjeta = prompt("¿Tarjeta de Débito o Crédito?\n1. Débito\n2. Crédito");
-                        if (tipoTarjeta === "1") {
-                            const descuentoDebito = precioTarjeta * 0.1;
-                            const precioFinal = precioTarjeta - descuentoDebito;
-                            alert("Tienes un descuento del 10%, deberás abonar: $" + precioFinal + ". Por favor, ingresa los datos de la tarjeta.");
-                        } else if (tipoTarjeta === "2") {
-                            const tresCuotas = (precioTarjeta / 3).toFixed(2);
-                            const seisCuotas = (precioTarjeta / 6).toFixed(2);
-                            const cuotas = prompt("¿Cuántas cuotas?\n1. 3 sin interés\n2. 6 sin interés");
-                            if (cuotas === "1") {
-                                alert("Las cuotas serán de: $" + tresCuotas + ". Por favor, ingresa los datos de la tarjeta.");
-                            } else if (cuotas === "2") {
-                                alert("Las cuotas serán de: $" + seisCuotas + ". Por favor, ingresa los datos de la tarjeta.");
-                            } else {
-                                alert("Opción incorrecta, intenta nuevamente");
-                            }
-                        } else {
-                            alert("Opción incorrecta, intenta nuevamente");
-                        }
-                    } while (tipoTarjeta !== "1" && tipoTarjeta !== "2");
-                    break;
-
-                default:
-                    alert("Opción incorrecta. Por favor, intenta nuevamente");
-                    break;
-            }
-        } while (pago !== "1" && pago !== "2");
+    finalizarCompraBtn.addEventListener('click', () => {
+        if (carrito.length === 0) {
+            mostrarMensajeModal("El carrito está vacío");
+            return;
+        }
+        modalCompra.show();
     });
 
-    //Declaramos funcion para agregar productos al carrito
+    document.getElementById('pago').addEventListener('change', (event) => {
+        const metPago = event.target.value;
+        const extraOpciones = document.getElementById('extraOpciones');
+
+        if (metPago === 'credito') {
+            extraOpciones.classList.remove('d-none');
+        } else {
+            extraOpciones.classList.add('d-none');
+        }
+        
+        actualizarCarrito(metPago);
+    });
+
+    cerrarCarritoBtn.addEventListener('click', () => {
+        checkout.classList.remove('open');
+    });
+
+    // Confirmacion de compra
+    document.getElementById('confirmarCompra').addEventListener('click', () => {
+        const nombre = document.getElementById('nombre').value;
+        const apellido = document.getElementById('apellido').value;
+        const correo = document.getElementById('correo').value;
+        const pago = document.getElementById('pago').value;
+        let cuotas = document.getElementById('cuotas').value;
+
+        if (!nombre || !apellido || !correo || !pago) {
+            
+            //si no se completa los datos
+            
+            modalCompra.hide();
+            mostrarMensajeModal("Para continuar con tu compra, deberás completar todos los campos");
+            $('#mensajeModal').on('hidden.bs.modal', function() {
+                modalCompra.show();
+            });
+            return;
+        }
+
+        let totalCompra = carrito.reduce((sum, producto) => sum + producto.precio, 0);
+        let mensaje = `¡Gracias ${nombre} ${apellido} por tu compra! `;
+
+        if (pago === 'transferencia' || pago === 'debito') {
+            const montoConDescuento = totalCompra * 0.9;
+            mensaje += `Tienes un descuento del 10%, el monto es $${montoConDescuento.toFixed(0)}. Recibiras los detalles al correo ${correo}.`;
+        } else if (pago === 'credito') {
+            cuotas = cuotas || 1;
+            const valorCuota = totalCompra / cuotas;
+            mensaje += `Las cuotas serán de $${valorCuota.toFixed(0)}. Por favor, ingresa los datos de la tarjeta.`;
+        }
+        
+        localStorage.setItem('compra', JSON.stringify({
+            cliente: `${nombre} ${apellido}`,
+            metodoPago: pago,
+            total: totalCompra
+        }));
+        mostrarMensajeModal(mensaje);
+        modalCompra.hide();
+        carrito = [];
+        checkout.classList.remove('open');
+        actualizarCarrito(pago);
+    });
 
     function agregarProductoAlCarrito(producto) {
         carrito.push(producto);
         actualizarCarrito();
     }
 
-    //Funcion que permite que a medida que se agreguen productos al carrito se vaya actualizando
+    function eliminarProducto(nombre) {
+        carrito = carrito.filter(producto => producto.nombre !== nombre);
+        actualizarCarrito();
+    }
 
-    function actualizarCarrito() {
+    function actualizarCarrito(metPago = '') {
         cartItems.innerHTML = '';
         carrito.forEach(producto => {
             const item = document.createElement('div');
@@ -127,13 +211,14 @@ document.addEventListener('DOMContentLoaded', () => {
             cartItems.appendChild(item);
         });
 
-        //Sumamos la totalidad de productos agregados al carrito
+        let totalPrecio = carrito.reduce((sum, producto) => sum + producto.precio, 0);
+        if (metPago === 'transferencia' || metPago === 'debito') {
+            totalPrecio *= 0.9;
+        }
 
-        const totalPrecio = carrito.reduce((sum, producto) => sum + producto.precio, 0);
-        total.textContent = `Total: $${totalPrecio}`;
+        total.textContent = `Total: $${totalPrecio.toFixed(2)}`;
 
-        //En caso de querer eliminar productos
-
+        // Manejo de eventos para eliminar productos
         const botonesEliminar = document.querySelectorAll('.remove');
         botonesEliminar.forEach(boton => {
             boton.addEventListener('click', () => {
@@ -143,15 +228,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //Declaracion de funcion para la eliminacion de la tarjeta de producto
-    
-    function eliminarProducto(nombre) {
-        carrito = carrito.filter(producto => producto.nombre !== nombre);
-        actualizarCarrito();
+    function mostrarMensajeModal(mensaje) {
+        const mensajeModalTexto = document.getElementById('mensajeModalTexto');
+        mensajeModalTexto.textContent = mensaje;
+        objetoMensajeModal.show();
     }
-
-    document.getElementById('cerrar-carrito').addEventListener('click', () => {
-        checkout.classList.remove('open');
-    });
 });
-
