@@ -17,29 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
         checkout.classList.add('open');
     });
 
-    // Modal confirmacion de compra
-    const mensajeModal = document.createElement('div');
-    mensajeModal.classList.add('modal', 'fade');
-    mensajeModal.id = 'mensajeModal';
-    mensajeModal.innerHTML = `
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirmación de Compra</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="mensajeModalTexto"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(mensajeModal);
-    const objetoMensajeModal = new bootstrap.Modal(document.getElementById('mensajeModal'));
-
     // Modal finalizacion de compra
     const modal = document.createElement('div');
     modal.classList.add('modal', 'fade');
