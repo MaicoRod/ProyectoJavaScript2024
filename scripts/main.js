@@ -1,12 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     //Declaracion de variables
+    
     const contenedor = document.querySelector('.contenedor');
     const checkout = document.getElementById('checkout');
+    const iconoCarrito = document.getElementById('icono-carrito');
     const cartItems = document.getElementById('cart-items');
     const total = document.getElementById('total');
     const finalizarCompraBtn = document.getElementById('finalizar-compra');
     const cerrarCarritoBtn = document.getElementById('cerrar-carrito');
+
+    //Abrir carrito de compras con el icono
+
+    iconoCarrito.addEventListener('click', (event) => {
+        event.preventDefault();
+        checkout.classList.add('open');
+    });
 
     // Modal confirmacion de compra
     const mensajeModal = document.createElement('div');
@@ -85,11 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalCompra = new bootstrap.Modal(document.getElementById('modalCompra'));
 
     // Agregar productos
-    productos.forEach(producto => {
-        const tarjeta = document.createElement('div');
-        tarjeta.classList.add('tarjetaArticulos', 'card');
-        tarjeta.style.width = "18rem";
-        tarjeta.innerHTML = `
+    fetch('./data/productos.json')
+        .then(response => response.json())
+        .then(productos => {
+            productos.forEach(producto => {
+                const tarjeta = document.createElement('div');
+                tarjeta.classList.add('tarjetaArticulos', 'card');
+                tarjeta.style.width = "18rem";
+                tarjeta.innerHTML = `
             <img src="${producto.img}" class="card-img-top" alt="${producto.nombre}">
             <div class="card-body">
                 <h5 class="card-title">${producto.nombre}</h5>
@@ -97,10 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <a href="#" class="btn btn-primary">COMPRAR</a>
         `;
-        contenedor.appendChild(tarjeta);
-    });
+                contenedor.appendChild(tarjeta);
+            });
+        })
+        .catch(error => alert('No se pudieron cargar los productos: ' + error));
 
     let carrito = [];
+    actualizarCarrito();
 
     // Comprar producto
     contenedor.addEventListener('click', (event) => {
@@ -118,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     finalizarCompraBtn.addEventListener('click', () => {
         if (carrito.length === 0) {
-            mostrarMensajeModal("El carrito está vacío");
+            mostrarMensajeModal("El carrito está vacío", 'warning', '');
             return;
         }
         modalCompra.show();
@@ -128,12 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const metPago = event.target.value;
         const extraOpciones = document.getElementById('extraOpciones');
 
-        if (metPago === 'credito') {
-            extraOpciones.classList.remove('d-none');
-        } else {
-            extraOpciones.classList.add('d-none');
-        }
-        
+        extraOpciones.classList.toggle('d-none', metPago !== 'credito');
         actualizarCarrito(metPago);
     });
 
@@ -150,12 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let cuotas = document.getElementById('cuotas').value;
 
         if (!nombre || !apellido || !correo || !pago) {
-            
+
             //si no se completa los datos
-            
+
             modalCompra.hide();
-            mostrarMensajeModal("Para continuar con tu compra, deberás completar todos los campos");
-            $('#mensajeModal').on('hidden.bs.modal', function() {
+            mostrarMensajeModal("Para continuar con tu compra, deberás completar todos los campos", 'error', '');
+            $('#mensajeModal').on('hidden.bs.modal', function () {
                 modalCompra.show();
             });
             return;
@@ -172,13 +182,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const valorCuota = totalCompra / cuotas;
             mensaje += `Las cuotas serán de $${valorCuota.toFixed(0)}. Por favor, ingresa los datos de la tarjeta.`;
         }
-        
+
         localStorage.setItem('compra', JSON.stringify({
             cliente: `${nombre} ${apellido}`,
             metodoPago: pago,
             total: totalCompra
         }));
-        mostrarMensajeModal(mensaje);
+        mostrarMensajeModal(mensaje, 'success', '¡Compra exitosa!');
         modalCompra.hide();
         carrito = [];
         checkout.classList.remove('open');
@@ -197,19 +207,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function actualizarCarrito(metPago = '') {
         cartItems.innerHTML = '';
-        carrito.forEach(producto => {
-            const item = document.createElement('div');
-            item.classList.add('product-card');
-            item.innerHTML = `
-                <img src="${producto.img}" alt="${producto.nombre}">
-                <div class="details">
-                    <h5>${producto.nombre}</h5>
-                    <p>Precio: $${producto.precio}</p>
-                </div>
-                <span class="remove" data-nombre="${producto.nombre}">&times;</span>
-            `;
-            cartItems.appendChild(item);
-        });
+        cartItems.innerHTML = carrito.length === 0
+            ? '<p>Tu carrito está vacío</p>'
+            : carrito.map(producto => `
+        <div class="product-card">
+            <img src="${producto.img}" alt="${producto.nombre}">
+            <div class="details">
+                <h5>${producto.nombre}</h5>
+                <p>Precio: $${producto.precio}</p>
+            </div>
+            <span class="remove" data-nombre="${producto.nombre}">&times;</span>
+        </div>
+    `).join('');
 
         let totalPrecio = carrito.reduce((sum, producto) => sum + producto.precio, 0);
         if (metPago === 'transferencia' || metPago === 'debito') {
@@ -228,9 +237,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function mostrarMensajeModal(mensaje) {
-        const mensajeModalTexto = document.getElementById('mensajeModalTexto');
-        mensajeModalTexto.textContent = mensaje;
-        objetoMensajeModal.show();
+    function mostrarMensajeModal(mensaje, tipo = 'info', titulo = 'Información'){
+        Swal.fire({
+            title: titulo,
+            text: mensaje,
+            icon: tipo,
+            confirmButtonText: 'Cerrar'
+        });
     }
+
 });
