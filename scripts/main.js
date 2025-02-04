@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     //Declaracion de variables
-    
+
     const contenedor = document.querySelector('.contenedor');
     const checkout = document.getElementById('checkout');
     const iconoCarrito = document.getElementById('icono-carrito');
@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const total = document.getElementById('total');
     const finalizarCompraBtn = document.getElementById('finalizar-compra');
     const cerrarCarritoBtn = document.getElementById('cerrar-carrito');
+    const anadirProductosBtn = document.getElementById('anadir-productos');
 
     //Abrir carrito de compras con el icono
 
@@ -128,6 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
         checkout.classList.remove('open');
     });
 
+    anadirProductosBtn.addEventListener('click', () =>{
+        checkout.classList.remove('open');
+    });
+
     // Confirmacion de compra
     document.getElementById('confirmarCompra').addEventListener('click', () => {
         const nombre = document.getElementById('nombre').value;
@@ -175,11 +180,32 @@ document.addEventListener('DOMContentLoaded', () => {
     function agregarProductoAlCarrito(producto) {
         carrito.push(producto);
         actualizarCarrito();
+
+        Toastify({
+            text: "Producto añadido correctamente",
+            duration: 3000, 
+            close: true,    
+            gravity: "top", 
+            position: "right", 
+            backgroundColor: "#4CAF50", 
+            stopOnFocus: true 
+        }).showToast();
     }
+    
 
     function eliminarProducto(nombre) {
         carrito = carrito.filter(producto => producto.nombre !== nombre);
         actualizarCarrito();
+
+        Toastify({
+            text: "Producto eliminado correctamente",
+            duration: 3000, // Duración del toast en milisegundos
+            close: true,    // Permitir cerrar el toast
+            gravity: "top", // Ubicación en la parte superior
+            position: "right", // Ubicación a la derecha
+            backgroundColor: "#ff0000", // Color de fondo verde (indica éxito)
+            stopOnFocus: true // Detener animación si el usuario interactúa con él
+        }).showToast();
     }
 
     function actualizarCarrito(metPago = '') {
@@ -214,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function mostrarMensajeModal(mensaje, tipo = 'info', titulo = 'Información'){
+    function mostrarMensajeModal(mensaje, tipo = 'info', titulo = 'Información') {
         Swal.fire({
             title: titulo,
             text: mensaje,
