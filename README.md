@@ -33,25 +33,37 @@ Estructura del proyecto
 📁 ProyectoJavaScript2024
 
 ↳ 📁 css
+    
     style.css
 
 ↳ 📁 data
+    
     productos.json
 
 ↳ 📁 images
+    
     logo.png
 
 ↳ 📁 sass
+
    ↳ 📁 presets
+          
           _colors.scss
+          
           _footer.scss
+          
           _header.scss
+          
           _main.scss
+          
           _resets.scss
+          
     _index.scss
+    
     _style.scss
 
 ↳ 📁 scripts
+    
     main.js
 
 index.html
@@ -75,7 +87,9 @@ Los usuarios podran visualizar el carrito de compras con los productos agregados
 Una vez que los usuarios den click en "Finalizar compra" se abrira una ventana emergente donde debera completar un formulario y seleccionar el método de pago deseado, en base a eso se le aplicara un descuento o se le financiara la compra.
 
 ● Notificaciones y alertas:
+
 _Toastify: muestra mensajes cuando se agrega o elimina productos del carrito.
+
 _SweetAlert: muestra mensajes de confirmación y errores.
 
 Futuras actualizaciones:
