@@ -7,30 +7,42 @@ Este proyecto se basa en una tienda online de ventas de celulares y accesorios i
 Características destacadas:
 
 🔹 Listado de productos que se obtiene de un archivo JSON.
+
 🔹 Carrito de compras que te permite agregar o eliminar productos.
+
 🔹 Métodos de pago con descuentos y financiación en cuotas.
+
 🔹 Interfaz moderna con Bootstrap, notificaciones con Sweet Alert y Toastify.
+
 🔹 Almacenamiento en localStorage para persistencia de datos.
 
 Tecnologías utilizadas:
 
 🔸 HTML5: Estructura del sitio.
+
 🔸 Bootstrap: Estilos y diseños responsivos.
+
 🔸 JavaScript: Lógica de la tienda y manejo del DOM.
+
 🔸 Toastify: Notificaciones emergentes.
+
 🔸 SweetAlert: Notificaciones personalizadas para notificaciones de confirmaciones y errores.
 
 Estructura del proyecto
 
 📁 ProyectoJavaScript2024
+
 ↳ 📁 css
     style.css
+
 ↳ 📁 data
     productos.json
+
 ↳ 📁 images
     logo.png
+
 ↳ 📁 sass
-    ↳ 📁 presets
+   ↳ 📁 presets
           _colors.scss
           _footer.scss
           _header.scss
@@ -38,9 +50,12 @@ Estructura del proyecto
           _resets.scss
     _index.scss
     _style.scss
+
 ↳ 📁 scripts
     main.js
+
 index.html
+
 README.md
 
 Instalación y uso
@@ -66,8 +81,11 @@ _SweetAlert: muestra mensajes de confirmación y errores.
 Futuras actualizaciones:
 
 ● Registro de usuario.
+
 ● Buscar productos a traves de la barra de busqueda.
+
 ● Agregar filtros y categorias de productos.
+
 ● Guardar productos favoritos para futuras compras.
 
 ENTREGA FINAL
