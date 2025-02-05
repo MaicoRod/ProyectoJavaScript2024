@@ -1,10 +1,10 @@
 🛒 Proyecto JavaScript de Tienda E-commerce
 
-Descripción:
+✏ Descripción:
 
 Este proyecto se basa en una tienda online de ventas de celulares y accesorios interactiva, la misma esta desarrollada con HTML, CSS y JavaScript. Permite a los usuarios agregar productos al carrito, visualizar el total de la compra y finalizar la compra completando un formulario con validaciones. Se utiliza localStorage para almacenar la información de la compra, SweetAlert y Toastify para las notificaciones al usuario.
 
-Características destacadas:
+✅ Características destacadas:
 
 🔹 Listado de productos que se obtiene de un archivo JSON.
 
@@ -16,7 +16,7 @@ Características destacadas:
 
 🔹 Almacenamiento en localStorage para persistencia de datos.
 
-Tecnologías utilizadas:
+💻 Tecnologías utilizadas:
 
 🔸 HTML5: Estructura del sitio.
 
@@ -28,7 +28,7 @@ Tecnologías utilizadas:
 
 🔸 SweetAlert: Notificaciones personalizadas para notificaciones de confirmaciones y errores.
 
-Estructura del proyecto
+🛠 Estructura del proyecto
 
 📁 ProyectoJavaScript2024
 
@@ -70,12 +70,12 @@ index.html
 
 README.md
 
-Instalación y uso
+🔗 Instalación y uso
 
 1. Clona el repositorio: https://github.com/MaicoRod/ProyectoJavaScript2024.git
 2. Abre el archivo index.html en el navegador.
 
-Funcionalidades
+🕹 Funcionalidades
 
 ● Agregar productos al carrito:
 Los productos provenientes del archivo JSON que se muestran a traves de tarjetas, pueden ser agregados al carrito al hacer click en "comprar".
@@ -92,7 +92,7 @@ _Toastify: muestra mensajes cuando se agrega o elimina productos del carrito.
 
 _SweetAlert: muestra mensajes de confirmación y errores.
 
-Futuras actualizaciones:
+🔁 Futuras actualizaciones:
 
 ● Registro de usuario.
 
@@ -101,6 +101,8 @@ Futuras actualizaciones:
 ● Agregar filtros y categorias de productos.
 
 ● Guardar productos favoritos para futuras compras.
+
+
 
 ENTREGA FINAL
 
