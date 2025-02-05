@@ -11,6 +11,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const cerrarCarritoBtn = document.getElementById('cerrar-carrito');
     const anadirProductosBtn = document.getElementById('anadir-productos');
 
+    // Llamado del archivo JSON para agregar productos
+
+    fetch('./data/productos.json')
+        .then(response => response.json())
+        .then(productos => {
+            productos.forEach(producto => {
+                const tarjeta = document.createElement('div');
+                tarjeta.classList.add('tarjetaArticulos', 'card');
+                tarjeta.style.width = "18rem";
+                tarjeta.innerHTML = `
+            <img src="${producto.img}" class="card-img-top" alt="${producto.nombre}">
+            <div class="card-body">
+                <h5 class="card-title">${producto.nombre}</h5>
+                <p class="card-text">$${producto.precio}</p>
+            </div>
+            <a href="#" class="btn btn-primary">COMPRAR</a>
+        `;
+                contenedor.appendChild(tarjeta);
+            });
+        })
+        .catch(error => {
+            Swal.fire({
+                title: "Error",
+                text: "Error en la carga de productos. Intenta nuevamente",
+                icon: "error",
+                confirmButtonText: "Cerrar"
+            });
+            console.error(error);
+        });
+
+    //Inicializacion del carrito    
+
+    let carrito = [];
+    actualizarCarrito();
+
     //Abrir carrito de compras con el icono
 
     iconoCarrito.addEventListener('click', (event) => {
@@ -19,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Modal finalizacion de compra
+
     const modal = document.createElement('div');
     modal.classList.add('modal', 'fade');
     modal.id = 'modalCompra';
@@ -71,31 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const modalCompra = new bootstrap.Modal(document.getElementById('modalCompra'));
 
-    // Agregar productos
-    fetch('./data/productos.json')
-        .then(response => response.json())
-        .then(productos => {
-            productos.forEach(producto => {
-                const tarjeta = document.createElement('div');
-                tarjeta.classList.add('tarjetaArticulos', 'card');
-                tarjeta.style.width = "18rem";
-                tarjeta.innerHTML = `
-            <img src="${producto.img}" class="card-img-top" alt="${producto.nombre}">
-            <div class="card-body">
-                <h5 class="card-title">${producto.nombre}</h5>
-                <p class="card-text">$${producto.precio}</p>
-            </div>
-            <a href="#" class="btn btn-primary">COMPRAR</a>
-        `;
-                contenedor.appendChild(tarjeta);
-            });
-        })
-        .catch(error => alert('No se pudieron cargar los productos: ' + error));
+    //Evento para comprar productos
 
-    let carrito = [];
-    actualizarCarrito();
-
-    // Comprar producto
     contenedor.addEventListener('click', (event) => {
         if (event.target.classList.contains('btn-primary')) {
             event.preventDefault();
@@ -108,6 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
             checkout.classList.add('open');
         }
     });
+
+    //Finalizacion de compra una vez seleccionado los productos deseados
 
     finalizarCompraBtn.addEventListener('click', () => {
         if (carrito.length === 0) {
@@ -125,25 +140,29 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarCarrito(metPago);
     });
 
+    //Eventos para cerrar el carrito con la "X" o añadir mas productos
+
     cerrarCarritoBtn.addEventListener('click', () => {
         checkout.classList.remove('open');
     });
 
-    anadirProductosBtn.addEventListener('click', () =>{
+    anadirProductosBtn.addEventListener('click', () => {
         checkout.classList.remove('open');
     });
 
     // Confirmacion de compra
+
     document.getElementById('confirmarCompra').addEventListener('click', () => {
         const nombre = document.getElementById('nombre').value;
         const apellido = document.getElementById('apellido').value;
-        const correo = document.getElementById('correo').value;
+        const correo = document.getElementById('correo').value.trim();
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; 
         const pago = document.getElementById('pago').value;
         let cuotas = document.getElementById('cuotas').value;
 
-        if (!nombre || !apellido || !correo || !pago) {
+        if (!nombre || !apellido || !correo || !emailRegex.test(correo) || !pago) {
 
-            //si no se completa los datos
+            //si no se completa los datos o el correo no tiene los datos correctos
 
             modalCompra.hide();
             mostrarMensajeModal("Para continuar con tu compra, deberás completar todos los campos", 'error', '');
@@ -177,21 +196,24 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarCarrito(pago);
     });
 
+    //Funcion para agregar productos al carrito
+
     function agregarProductoAlCarrito(producto) {
         carrito.push(producto);
         actualizarCarrito();
 
         Toastify({
             text: "Producto añadido correctamente",
-            duration: 3000, 
-            close: true,    
-            gravity: "top", 
-            position: "right", 
-            backgroundColor: "#4CAF50", 
-            stopOnFocus: true 
+            duration: 3000,
+            close: true,
+            gravity: "bottom",
+            position: "right",
+            backgroundColor: "#4CAF50",
+            stopOnFocus: true
         }).showToast();
     }
-    
+
+    //Eliminacion de productos no deseados del carrito
 
     function eliminarProducto(nombre) {
         carrito = carrito.filter(producto => producto.nombre !== nombre);
@@ -199,14 +221,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         Toastify({
             text: "Producto eliminado correctamente",
-            duration: 3000, // Duración del toast en milisegundos
-            close: true,    // Permitir cerrar el toast
-            gravity: "top", // Ubicación en la parte superior
-            position: "right", // Ubicación a la derecha
-            backgroundColor: "#ff0000", // Color de fondo verde (indica éxito)
-            stopOnFocus: true // Detener animación si el usuario interactúa con él
+            duration: 3000,
+            close: true,
+            gravity: "bottom",
+            position: "right",
+            backgroundColor: "#dc3545",
+            stopOnFocus: true
         }).showToast();
     }
+
+    //Actualizacion del carrito a medida que se agrega o elimina productos
 
     function actualizarCarrito(metPago = '') {
         cartItems.innerHTML = '';
@@ -231,6 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
         total.textContent = `Total: $${totalPrecio.toFixed(2)}`;
 
         // Manejo de eventos para eliminar productos
+
         const botonesEliminar = document.querySelectorAll('.remove');
         botonesEliminar.forEach(boton => {
             boton.addEventListener('click', () => {
@@ -239,6 +264,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    //Notificaciones al usuario mediante SweetAlert
 
     function mostrarMensajeModal(mensaje, tipo = 'info', titulo = 'Información') {
         Swal.fire({
